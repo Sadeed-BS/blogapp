@@ -33,9 +33,9 @@
 
                 <div class="hidden lg:flex lg:gap-x-12">
                     <a href="#" class="text-sm font-semibold leading-6 text-gray-200 hover:text-white transition">Blogs</a>
-                    <a href="#" class="text-sm font-semibold leading-6 text-gray-200 hover:text-white transition">Profile</a>
+                    <a href="{% url 'user_home' %}" class="text-sm font-semibold leading-6 text-gray-200 hover:text-white transition">Profile</a>
                     <a href="#" class="text-sm font-semibold leading-6 text-gray-200 hover:text-white transition">Contact</a>
-                    <a href="#" class="text-sm font-semibold leading-6 text-gray-200 hover:text-white transition">Create Blog</a>
+                    <a href="{% url 'add_blog' %}" class="text-sm font-semibold leading-6 text-gray-200 hover:text-white transition">Create Blog</a>
                 </div>
                 <div class="hidden lg:flex lg:flex-1 lg:justify-end">
                     {% if user.is_authenticated %}
@@ -45,10 +45,15 @@
                                 <span class="text-sm font-semibold leading-6 text-white">{{ user.username }}</span>
                                 <svg class="w-4 h-4 text-gray-300" viewBox="0 0 20 20" fill="none" stroke="currentColor"><path d="M6 8l4 4 4-4" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
                             </button>
-                            <div id="user-menu" class="hidden absolute right-0 mt-2 w-40 rounded-md bg-gray-800 p-2 shadow-lg">
+                            <div id="user-menu" class="hidden absolute right-0 mt-2 w-44 rounded-md bg-gray-800 p-2 shadow-lg">
+                                {% if not user.is_superuser %}
+                                    <a href="{% url 'user_home' %}" class="block rounded px-2 py-2 text-sm text-indigo-300 hover:bg-gray-700">Dashboard</a>
+                                {% else %}
+                                    <a href="{% url 'admin_home' %}" class="block rounded px-2 py-2 text-sm text-indigo-300 hover:bg-gray-700">Admin</a>
+                                {% endif %}
                                 <form method="post" action="{% url 'logout' %}">
                                     {% csrf_token %}
-                                    <button type="submit" class="w-full text-left px-2 py-2 rounded text-sm text-indigo-300 hover:bg-gray-700">Logout</button>
+                                    <button type="submit" class="w-full text-left rounded px-2 py-2 text-sm text-indigo-300 hover:bg-gray-700">Logout</button>
                                 </form>
                             </div>
                         </div>
@@ -79,9 +84,9 @@
                         <div class="-my-6 divide-y divide-gray-800">
                             <div class="space-y-2 py-6">
                                 <a href="#" class="-mx-3 block rounded-lg px-3 py-2 text-base font-semibold leading-7 text-gray-200 hover:bg-gray-800">Blogs</a>
-                                <a href="#" class="-mx-3 block rounded-lg px-3 py-2 text-base font-semibold leading-7 text-gray-200 hover:bg-gray-800">Profile</a>
+                                <a href="{% url 'user_home' %}" class="-mx-3 block rounded-lg px-3 py-2 text-base font-semibold leading-7 text-gray-200 hover:bg-gray-800">Profile</a>
                                 <a href="#" class="-mx-3 block rounded-lg px-3 py-2 text-base font-semibold leading-7 text-gray-200 hover:bg-gray-800">Contact</a>
-                                <a href="#" class="-mx-3 block rounded-lg px-3 py-2 text-base font-semibold leading-7 text-gray-200 hover:bg-gray-800">Create Blog</a>
+                                <a href="{% url 'add_blog' %}" class="-mx-3 block rounded-lg px-3 py-2 text-base font-semibold leading-7 text-gray-200 hover:bg-gray-800">Create Blog</a>
                             </div>
                             <div class="py-6">
                                 {% if user.is_authenticated %}
@@ -95,6 +100,11 @@
                                                 <svg class="w-4 h-4 text-gray-300" viewBox="0 0 20 20" fill="none" stroke="currentColor"><path d="M6 8l4 4 4-4" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
                                             </button>
                                             <div id="mobile-user-menu" class="hidden mt-2 px-2">
+                                                {% if not user.is_superuser %}
+                                                    <a href="{% url 'user_home' %}" class="w-full block rounded px-2 py-2 text-left text-sm text-indigo-300 hover:bg-gray-700">Dashboard</a>
+                                                {% else %}
+                                                    <a href="{% url 'admin_home' %}" class="w-full block rounded px-2 py-2 text-left text-sm text-indigo-300 hover:bg-gray-700">Admin</a>
+                                                {% endif %}
                                                 <form method="post" action="{% url 'logout' %}">
                                                     {% csrf_token %}
                                                     <button type="submit" class="w-full text-left px-2 py-2 rounded text-sm text-indigo-300 hover:bg-gray-700">Logout</button>

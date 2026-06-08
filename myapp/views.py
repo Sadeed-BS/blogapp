@@ -1,7 +1,8 @@
 from django.shortcuts import render, redirect
 from django.contrib.auth import authenticate,login,logout
+from django.contrib.auth.decorators import login_required, user_passes_test
 from django.contrib.auth.models import User
-from .models import *
+from .models import UserProfile, Blog
 
 # Create your views here.
 
@@ -16,14 +17,11 @@ def login_view(request):
         user = authenticate(request, username=username, password=password)
 
         if user is not None:
-
-           login(request, user)
-
-           if user.is_superuser:
-               return redirect('/admin')
-
-           else:
-               return redirect('/')
+            login(request, user)
+            if user.is_superuser:
+                return redirect('admin_home')
+            else:
+                return redirect('user_home')
     return render(request, 'login.html')
 
 def register(request):
@@ -58,6 +56,49 @@ def logout_view(request):
     if request.method == 'POST':
         logout(request)
     return redirect('home')
+
+@login_required
+def user_home(request):
+    user_profile = UserProfile.objects.filter(USER=request.user).first()
+    user_blogs = Blog.objects.filter(USER=request.user).order_by('-created_at')
+    stats = {
+        'profile': user_profile,
+        'blog_count': user_blogs.count(),
+        'recent_blogs': user_blogs[:5],
+    }
+    return render(request, 'user_home.html', stats)
+
+@login_required
+@user_passes_test(lambda user: user.is_superuser)
+def admin_view(request):
+    stats = {
+        'user_count': User.objects.count(),
+        'profile_count': UserProfile.objects.count(),
+        'blog_count': Blog.objects.count(),
+        'recent_blogs': Blog.objects.order_by('-created_at')[:5],
+    }
+    return render(request, 'admin_home.html', stats)
+
+
+@login_required
+def add_blog(request):
+
+   if request.method == "POST":
+
+       title = request.POST['title']
+       content = request.POST['content']
+       image = request.FILES['image']
+
+       Blog.objects.create(
+           USER=request.user,
+           title=title,
+           content=content,
+           image=image
+       )
+
+       return redirect('user_home')
+
+   return render(request,'add_blog.html')
 
 
 
