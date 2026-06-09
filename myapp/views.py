@@ -10,19 +10,32 @@ def home(request):
     return render(request, 'home.html')
 
 def login_view(request):
+    if request.user.is_authenticated:
+        if request.user.is_superuser:
+            return redirect('admin_home')
+        return redirect('user_home')
+
+    next_url = request.GET.get('next', '')
     if request.method == "POST":
         username = request.POST['username']
         password = request.POST['password']
+        next_url = request.POST.get('next', '')
+        if next_url and not next_url.startswith('/'):
+            next_url = ''
 
         user = authenticate(request, username=username, password=password)
 
         if user is not None:
             login(request, user)
+            if next_url:
+                return redirect(next_url)
             if user.is_superuser:
                 return redirect('admin_home')
-            else:
-                return redirect('user_home')
-    return render(request, 'login.html')
+            return redirect('user_home')
+
+        return render(request, 'login.html', {'next': next_url, 'error': 'Invalid username or password'})
+
+    return render(request, 'login.html', {'next': next_url})
 
 def register(request):
     if request.method == "POST":
@@ -99,6 +112,10 @@ def add_blog(request):
        return redirect('user_home')
 
    return render(request,'add_blog.html')
+
+
+def custom_404_view(request, exception=None):
+    return render(request, '404.html', status=404)
 
 
 

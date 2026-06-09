@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    {% load static %}
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Page not found | BlogApp</title>
+    <link rel="icon" href="{% static 'icon/favicon.svg' %}" type="image/svg+xml">
+    <script src="https://unpkg.com/@tailwindcss/browser@4"></script>
+</head>
+<body class="bg-gray-950 text-white min-h-screen flex items-center justify-center px-6 py-12">
+    <div class="max-w-3xl text-center">
+        <p class="text-sm uppercase tracking-[0.3em] text-indigo-400">404 error</p>
+        <h1 class="mt-6 text-5xl font-bold tracking-tight">Page not found</h1>
+        <p class="mt-4 text-lg text-gray-300">The page you are looking for doesn’t exist or has been moved.</p>
+        <div class="mt-10 flex flex-col sm:flex-row items-center justify-center gap-4">
+            <a href="/" class="inline-flex items-center justify-center rounded-full bg-indigo-500 px-6 py-3 text-sm font-semibold text-white transition hover:bg-indigo-400">Back to Home</a>
+            <a href="/login/" class="inline-flex items-center justify-center rounded-full border border-white/10 bg-white/5 px-6 py-3 text-sm font-semibold text-white transition hover:bg-white/10">Go to Login</a>
+        </div>
+    </div>
+</body>
+</html>

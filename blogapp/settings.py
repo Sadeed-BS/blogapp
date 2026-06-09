@@ -25,7 +25,7 @@ SECRET_KEY = 'django-insecure-$u^8*79*)tmxqqiq7ngq+7t&kj)33y8-ea8c8ez=#rfukspv86
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['127.0.0.1', 'localhost']
 
 
 # Application definition
@@ -119,6 +119,10 @@ STATIC_URL = 'static/'
 
 MEDIA_URL = '/media/'
 MEDIA_ROOT = BASE_DIR / 'media'
+
+# Login redirection settings
+LOGIN_URL = '/login/'
+LOGIN_REDIRECT_URL = '/user_home/'
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.2/ref/settings/#default-auto-field
