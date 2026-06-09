@@ -2,12 +2,14 @@ from django.shortcuts import render, redirect
 from django.contrib.auth import authenticate,login,logout
 from django.contrib.auth.decorators import login_required, user_passes_test
 from django.contrib.auth.models import User
+from django.db.models import Q
 from .models import UserProfile, Blog
 
 # Create your views here.
 
 def home(request):
-    return render(request, 'home.html')
+    latest_blogs = Blog.objects.order_by('-created_at')[:3]
+    return render(request, 'home.html', {'latest_blogs': latest_blogs})
 
 def login_view(request):
     if request.user.is_authenticated:
@@ -109,13 +111,90 @@ def add_blog(request):
            image=image
        )
 
+       if request.user.is_superuser:
+           return redirect('admin_home')
        return redirect('user_home')
 
    return render(request,'add_blog.html')
 
 
+@login_required
+def my_blogs(request):
+
+   blogs = Blog.objects.filter(USER=request.user)
+
+   return render(request,'my_blogs.html',{'blogs':blogs})
+
+@login_required
+def blog_feed(request):
+    query = request.GET.get('q', '').strip()
+    blogs = Blog.objects.all()
+    if query:
+        blogs = blogs.filter(
+            Q(title__icontains=query) |
+            Q(content__icontains=query) |
+            Q(USER__username__icontains=query)
+        )
+    blogs = blogs.order_by('-created_at')
+    return render(request, 'blog_feed.html', {'blogs': blogs, 'query': query})
+
+@login_required
+def edit_blog(request,id):
+
+   blog = Blog.objects.get(id=id)
+
+   if request.method == "POST":
+
+       blog.title = request.POST['title']
+       blog.content = request.POST['content']
+
+       if 'image' in request.FILES:
+           blog.image = request.FILES['image']
+
+       blog.save()
+
+       return redirect('my_blogs')
+
+   return render(request,'edit_blog.html',{'blog':blog})
+
+@login_required
+def delete_blog(request,id):
+
+   blog = Blog.objects.get(id=id)
+
+   blog.delete()
+
+   return redirect('my_blogs')
+
+@login_required
+@user_passes_test(lambda user: user.is_superuser)
+def delete_blog_admin(request,id):
+
+   blog = Blog.objects.get(id=id)
+
+   blog.delete()
+
+   return redirect('view_blogs_admin')
+
+
 def custom_404_view(request, exception=None):
     return render(request, '404.html', status=404)
+
+@login_required
+@user_passes_test(lambda user: user.is_superuser)
+def view_blogs_admin(request):
+
+   blogs = Blog.objects.all()
+
+   return render(request,'view_blogs_admin.html',{'blogs':blogs})
+
+@login_required
+@user_passes_test(lambda user: user.is_superuser)
+def view_users(request):
+
+   users = UserProfile.objects.all()
+
+   return render(request,'view_users.html',{'users':users})
 
 
 

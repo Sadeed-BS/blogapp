@@ -20,7 +20,7 @@
                 </a>
                 <div class="flex flex-wrap items-center justify-end gap-3">
                     <a href="{% url 'home' %}" class="rounded-full bg-white/5 px-4 py-2 text-sm font-semibold text-indigo-300 hover:bg-white/10">Landing</a>
-                    <a href="#blogs" class="rounded-full bg-white/5 px-4 py-2 text-sm font-semibold text-indigo-300 hover:bg-white/10">My blogs</a>
+                    <a href="{% url 'my_blogs' %}" class="rounded-full bg-white/5 px-4 py-2 text-sm font-semibold text-indigo-300 hover:bg-white/10">My blogs</a>
                     <form method="post" action="{% url 'logout' %}" class="ml-0">
                         {% csrf_token %}
                         <button type="submit" class="rounded-full bg-indigo-500 px-4 py-2 text-sm font-semibold text-white hover:bg-indigo-400">Logout</button>
@@ -68,7 +68,7 @@
                         <p class="text-sm uppercase tracking-[0.24em] text-indigo-400">Your posts</p>
                         <h2 class="mt-2 text-2xl font-bold text-white">Recent posts</h2>
                     </div>
-                    <a href="{% url 'add_blog' %}" c    lass="inline-flex items-center rounded-full bg-indigo-500 px-4 py-2 text-sm font-semibold text-white hover:bg-indigo-400">Write new blog</a>
+                    <a href="{% url 'add_blog' %}" class="inline-flex items-center rounded-full bg-indigo-500 px-4 py-2 text-sm font-semibold text-white hover:bg-indigo-400">Write new blog</a>
                 </div>
                 <div class="mt-6 space-y-4">
                     {% if recent_blogs %}
@@ -103,5 +103,6 @@
                 </div>
             </section>
         </main>
+    {% include 'footer.html' %}
     </body>
 </html>

@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    {% load static %}
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>All Users | BlogAPP</title>
+    <link rel="icon" href="{% static 'icon/favicon.svg' %}" type="image/svg+xml">
+    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+</head>
+<body class="min-h-screen bg-slate-950 text-slate-100">
+    <div class="relative overflow-hidden">
+        <div class="absolute inset-x-0 top-0 h-48 bg-gradient-to-r from-indigo-600 via-sky-600 to-cyan-500 opacity-40 blur-3xl"></div>
+        <div class="relative mx-auto max-w-7xl px-4 py-10 sm:px-6 lg:px-8">
+            <header class="mb-10 rounded-[2rem] border border-white/10 bg-gray-900/95 p-8 shadow-2xl shadow-black/20 backdrop-blur-xl">
+                <div class="flex flex-col gap-5 lg:flex-row lg:items-center lg:justify-between">
+                    <div>
+                        <p class="text-sm uppercase tracking-[0.35em] text-cyan-300/80">Admin users</p>
+                        <h1 class="mt-3 text-4xl font-bold tracking-tight text-white">Registered Users</h1>
+                        <p class="mt-4 max-w-2xl text-sm leading-6 text-slate-400">Review your site users in a clean and responsive admin table with search-ready layout.</p>
+                    </div>
+                    <div class="flex flex-wrap items-center gap-3">
+                        <a href="{% url 'admin_home' %}" class="inline-flex items-center justify-center rounded-full bg-white/5 px-5 py-3 text-sm font-semibold text-indigo-300 transition hover:bg-white/10">Admin Home</a>
+                        <a href="{% url 'view_blogs_admin' %}" class="inline-flex items-center justify-center rounded-full bg-slate-800 px-5 py-3 text-sm font-semibold text-slate-100 transition hover:bg-slate-700">View Blogs</a>
+                    </div>
+                </div>
+            </header>
+
+            <section class="overflow-hidden rounded-[2rem] border border-white/10 bg-slate-900/80 shadow-2xl shadow-black/20">
+                <div class="overflow-x-auto">
+                    <table class="min-w-full divide-y divide-white/10 text-sm text-left">
+                        <thead class="bg-slate-950/90 text-slate-300">
+                            <tr>
+                                <th class="px-6 py-4 uppercase tracking-[0.18em] text-xs font-semibold">Name</th>
+                                <th class="px-6 py-4 uppercase tracking-[0.18em] text-xs font-semibold">Email</th>
+                                <th class="px-6 py-4 uppercase tracking-[0.18em] text-xs font-semibold">Phone</th>
+                                <th class="px-6 py-4 uppercase tracking-[0.18em] text-xs font-semibold">Place</th>
+                            </tr>
+                        </thead>
+                        <tbody class="divide-y divide-white/10 bg-slate-900/70">
+                            {% if users %}
+                                {% for i in users %}
+                                    <tr class="transition hover:bg-white/5">
+                                        <td class="px-6 py-4 text-slate-100">{{ i.name }}</td>
+                                        <td class="px-6 py-4 text-slate-300 break-words">{{ i.email }}</td>
+                                        <td class="px-6 py-4 text-slate-300">{{ i.phone }}</td>
+                                        <td class="px-6 py-4 text-slate-300">{{ i.place }}</td>
+                                    </tr>
+                                {% endfor %}
+                            {% else %}
+                                <tr>
+                                    <td class="px-6 py-10 text-center text-slate-400" colspan="4">No registered users found.</td>
+                                </tr>
+                            {% endif %}
+                        </tbody>
+                    </table>
+                </div>
+            </section>
+        </div>
+    </div>
+    {% include 'footer.html' %}
+</body>
+</html>

@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    {% load static %}
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Edit Blog | BlogApp</title>
+    <link rel="icon" href="{% static 'icon/favicon.svg' %}" type="image/svg+xml">
+    <script src="https://unpkg.com/@tailwindcss/browser@4"></script>
+</head>
+<body class="min-h-screen bg-slate-950 text-slate-100">
+    <div class="relative overflow-hidden px-4 py-10 sm:px-6 lg:px-8">
+        <div class="absolute inset-x-0 top-0 h-48 bg-gradient-to-r from-indigo-600 via-sky-600 to-cyan-500 opacity-40 blur-3xl"></div>
+        <div class="relative mx-auto max-w-3xl rounded-[2rem] border border-white/10 bg-slate-900/85 p-8 shadow-2xl shadow-black/30 backdrop-blur-xl sm:p-10">
+            <div class="mb-8 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+                <div>
+                    <p class="text-sm font-semibold uppercase tracking-[0.3em] text-cyan-300/80">Edit Blog Post</p>
+                    <h1 class="mt-3 text-4xl font-bold tracking-tight text-white">Update your content</h1>
+                    <p class="mt-3 max-w-xl text-sm leading-6 text-slate-400">Edit the current blog post, upload a new image, and save your changes with a clean, responsive editor.</p>
+                </div>
+                <a href="{% url 'my_blogs' %}" class="inline-flex items-center justify-center rounded-full bg-slate-800/90 px-5 py-3 text-sm font-semibold text-slate-100 transition hover:bg-slate-700">Back to My Blogs</a>
+            </div>
+
+            <form method="POST" enctype="multipart/form-data" class="space-y-8">
+                {% csrf_token %}
+                <div class="rounded-3xl border border-white/10 bg-slate-950/90 p-6 shadow-inner shadow-black/10">
+                    <div class="grid gap-6">
+                        <label class="space-y-3">
+                            <span class="text-sm font-semibold text-slate-200">Title</span>
+                            <input type="text" name="title" value="{{ blog.title }}" class="w-full rounded-3xl border border-slate-700 bg-slate-900 px-4 py-3 text-sm text-slate-100 placeholder:text-slate-500 focus:border-cyan-400 focus:outline-none focus:ring-2 focus:ring-cyan-400/10" required />
+                        </label>
+
+                        <label class="space-y-3">
+                            <span class="text-sm font-semibold text-slate-200">Content</span>
+                            <textarea name="content" rows="10" class="w-full rounded-3xl border border-slate-700 bg-slate-900 px-4 py-3 text-sm text-slate-100 placeholder:text-slate-500 focus:border-cyan-400 focus:outline-none focus:ring-2 focus:ring-cyan-400/10" required>{{ blog.content }}</textarea>
+                        </label>
+
+                        <label class="space-y-3">
+                            <span class="text-sm font-semibold text-slate-200">Upload Image</span>
+                            <div class="flex flex-col gap-3 sm:flex-row sm:items-center">
+                                <input type="file" name="image" class="block w-full rounded-3xl border border-slate-700 bg-slate-900 px-4 py-3 text-sm text-slate-100 file:rounded-full file:border-0 file:bg-cyan-500 file:px-4 file:py-2 file:text-sm file:font-semibold file:text-slate-950 file:transition file:hover:bg-cyan-400" />
+                                {% if blog.image %}
+                                    <div class="overflow-hidden rounded-3xl border border-slate-700 bg-slate-800 p-2">
+                                        <img src="{{ blog.image.url }}" alt="{{ blog.title }} image" class="h-24 w-24 rounded-3xl object-cover" />
+                                    </div>
+                                {% endif %}
+                            </div>
+                        </label>
+                    </div>
+                </div>
+
+                <div class="flex flex-col gap-4 sm:flex-row sm:justify-end">
+                    <a href="{% url 'my_blogs' %}" class="inline-flex items-center justify-center rounded-full border border-slate-700 bg-slate-900 px-6 py-3 text-sm font-semibold text-slate-200 transition hover:border-slate-500 hover:bg-slate-800">Cancel</a>
+                    <button type="submit" class="inline-flex items-center justify-center rounded-full bg-gradient-to-r from-indigo-500 to-cyan-400 px-6 py-3 text-sm font-semibold text-slate-950 shadow-lg shadow-cyan-500/20 transition hover:from-indigo-400 hover:to-cyan-300">Update Blog</button>
+                </div>
+            </form>
+        </div>
+    </div>
+    {% include 'footer.html' %}
+</body>
+</html>

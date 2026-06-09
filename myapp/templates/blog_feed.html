@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    {% load static %}
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Blog Feed | BlogAPP</title>
+    <link rel="icon" href="{% static 'icon/favicon.svg' %}" type="image/svg+xml">
+    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+</head>
+<body class="min-h-screen bg-slate-950 text-slate-100">
+    <div class="relative overflow-hidden">
+        <div class="absolute inset-x-0 top-0 h-48 bg-gradient-to-r from-indigo-600 via-sky-600 to-cyan-500 opacity-40 blur-3xl"></div>
+        <div class="relative mx-auto max-w-6xl px-4 py-10 sm:px-6 lg:px-8">
+            <header class="mb-10 rounded-[2rem] border border-white/10 bg-slate-900/95 p-8 shadow-2xl shadow-black/20 backdrop-blur-xl">
+                <div class="flex flex-col gap-6 lg:flex-row lg:items-center lg:justify-between">
+                    <div>
+                        <p class="text-sm uppercase tracking-[0.35em] text-cyan-300/80">Community Feed</p>
+                        <h1 class="mt-3 text-4xl font-bold tracking-tight text-white">Browse all blog posts</h1>
+                        <p class="mt-4 max-w-2xl text-sm leading-6 text-slate-400">Scroll through the latest posts from every author, with the featured post first and full story details below.</p>
+                    </div>
+                    <div class="flex flex-wrap items-center gap-3">
+                        <a href="{% url 'home' %}" class="inline-flex items-center justify-center rounded-full bg-white/5 px-5 py-3 text-sm font-semibold text-indigo-300 transition hover:bg-white/10">Home</a>
+                        {% if user.is_authenticated %}
+                            {% if user.is_superuser %}
+                                <a href="{% url 'admin_home' %}" class="inline-flex items-center justify-center rounded-full bg-slate-800 px-5 py-3 text-sm font-semibold text-slate-100 transition hover:bg-slate-700">Dashboard</a>
+                            {% else %}
+                                <a href="{% url 'user_home' %}" class="inline-flex items-center justify-center rounded-full bg-slate-800 px-5 py-3 text-sm font-semibold text-slate-100 transition hover:bg-slate-700">Dashboard</a>
+                            {% endif %}
+                        {% else %}
+                            <a href="{% url 'login' %}" class="inline-flex items-center justify-center rounded-full bg-slate-800 px-5 py-3 text-sm font-semibold text-slate-100 transition hover:bg-slate-700">Login</a>
+                        {% endif %}
+                    </div>
+                </div>
+                <div class="mt-8">
+                    <form method="get" action="{% url 'blog_feed' %}" class="flex flex-col gap-3 sm:flex-row sm:items-center">
+                        <label for="search" class="sr-only">Search blogs</label>
+                        <input id="search" name="q" type="text" value="{{ query|default:'' }}" placeholder="Search by title, author, or content" class="min-w-0 flex-1 rounded-3xl border border-white/10 bg-slate-950/90 px-4 py-3 text-sm text-slate-100 placeholder:text-slate-500 focus:border-cyan-400 focus:outline-none focus:ring-2 focus:ring-cyan-400/20" />
+                        <button type="submit" class="inline-flex items-center justify-center rounded-3xl bg-indigo-500 px-5 py-3 text-sm font-semibold text-slate-950 transition hover:bg-indigo-400">Search</button>
+                    </form>
+                    {% if query %}
+                        <p class="mt-3 text-sm text-slate-300">Showing results for <span class="font-semibold text-white">"{{ query }}"</span>.</p>
+                    {% endif %}
+                </div>
+            </header>
+
+            <main class="space-y-10">
+                {% if blogs %}
+                    {% for blog in blogs %}
+                        {% if forloop.first %}
+                            <article class="overflow-hidden rounded-[2.5rem] border border-white/10 bg-slate-900/95 shadow-2xl shadow-black/25">
+                                {% if blog.image %}
+                                    <div class="h-[520px] overflow-hidden rounded-t-[2.5rem] bg-slate-800">
+                                        <img src="{{ blog.image.url }}" alt="{{ blog.title }}" class="h-full w-full object-cover object-center" />
+                                    </div>
+                                {% endif %}
+                                <div class="space-y-6 p-8 sm:p-10">
+                                    <div class="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+                                        <div>
+                                            <p class="text-sm font-semibold uppercase tracking-[0.24em] text-cyan-300">{{ blog.USER.username }}</p>
+                                            <p class="mt-2 text-4xl font-semibold text-white">{{ blog.title }}</p>
+                                        </div>
+                                        <time datetime="{{ blog.created_at|date:'Y-m-d' }}" class="text-sm text-slate-400">{{ blog.created_at|date:'M d, Y' }}</time>
+                                    </div>
+                                    <p class="text-base leading-8 text-slate-300">{{ blog.content|linebreaksbr }}</p>
+                                </div>
+                            </article>
+                        {% else %}
+                            <article class="overflow-hidden rounded-[2rem] border border-white/10 bg-slate-900/80 shadow-2xl shadow-black/20 transition hover:-translate-y-1">
+                                <div class="space-y-4 p-6 sm:p-8">
+                                    <div class="flex items-center justify-between gap-4">
+                                        <div>
+                                            <p class="text-sm font-semibold uppercase tracking-[0.24em] text-cyan-300">{{ blog.USER.username }}</p>
+                                            <h2 class="mt-2 text-2xl font-semibold text-white">{{ blog.title }}</h2>
+                                        </div>
+                                        <time datetime="{{ blog.created_at|date:'Y-m-d' }}" class="text-sm text-slate-400">{{ blog.created_at|date:'M d, Y' }}</time>
+                                    </div>
+                                    {% if blog.image %}
+                                        <img src="{{ blog.image.url }}" alt="{{ blog.title }}" class="h-72 w-full rounded-[1.75rem] object-cover object-center" />
+                                    {% endif %}
+                                    <p class="text-sm leading-7 text-slate-300">{{ blog.content|linebreaksbr }}</p>
+                                </div>
+                            </article>
+                        {% endif %}
+                    {% endfor %}
+                {% else %}
+                    <div class="rounded-[2rem] border border-dashed border-slate-700 bg-slate-900/80 p-12 text-center text-slate-300">
+                        <p class="text-xl font-semibold text-white">No published blogs yet.</p>
+                        <p class="mt-3 text-sm text-slate-400">Once users publish posts, they’ll appear here in reverse chronological order.</p>
+                    </div>
+                {% endif %}
+            </main>
+        </div>
+    </div>
+    {% include 'footer.html' %}
+</body>
+</html>

@@ -1,0 +1,45 @@
+<footer class="border-t border-white/10 bg-slate-950/95 text-slate-300">
+    <div class="w-full -mx-4 sm:-mx-6 lg:-mx-8 px-4 py-10 sm:px-6 lg:px-8">
+        <div class="mx-auto w-full {% if narrow_footer %}max-w-xl{% else %}max-w-7xl{% endif %}">
+            <div class="grid gap-10 md:grid-cols-[1.3fr_0.7fr]">
+                <div class="space-y-4">
+                <div class="flex items-center gap-3">
+                    <span class="inline-flex h-11 w-11 items-center justify-center rounded-2xl bg-gradient-to-br from-indigo-500 to-cyan-400 text-lg font-bold text-slate-950">B</span>
+                    <div>
+                        <p class="text-lg font-semibold text-white">BlogAPP</p>
+                        <p class="text-sm text-slate-400">Community publishing for developers.</p>
+                    </div>
+                </div>
+                <p class="max-w-2xl text-sm leading-6 text-slate-400">Read posts, publish stories, and discover new articles from every author. Built with Django and styled for modern browsing.</p>
+            </div>
+            <div class="grid gap-6 sm:grid-cols-2">
+                <div>
+                    <p class="text-sm font-semibold uppercase tracking-[0.3em] text-slate-400">Quick links</p>
+                    <ul class="mt-4 space-y-3 text-sm text-slate-300">
+                        <li><a href="{% url 'home' %}" class="transition hover:text-white">Home</a></li>
+                        <li><a href="{% url 'blog_feed' %}" class="transition hover:text-white">Feed</a></li>
+                        <li><a href="{% url 'add_blog' %}" class="transition hover:text-white">Write</a></li>
+                    </ul>
+                </div>
+                <div>
+                    <p class="text-sm font-semibold uppercase tracking-[0.3em] text-slate-400">Support</p>
+                    <ul class="mt-4 space-y-3 text-sm text-slate-300">
+                        <li><a href="{% url 'login' %}" class="transition hover:text-white">Login</a></li>
+                        <li><a href="{% url 'register' %}" class="transition hover:text-white">Register</a></li>
+                        {% if user.is_authenticated %}
+                            {% if user.is_superuser %}
+                                <li><a href="{% url 'admin_home' %}" class="transition hover:text-white">Dashboard</a></li>
+                            {% else %}
+                                <li><a href="{% url 'user_home' %}" class="transition hover:text-white">Dashboard</a></li>
+                            {% endif %}
+                        {% endif %}
+                    </ul>
+                </div>
+            </div>
+        </div>
+        <div class="mt-10 border-t border-white/10 pt-6 text-sm text-slate-500 sm:flex sm:items-center sm:justify-between">
+            <p>&copy; {% now "Y" %} BlogAPP. Built for developers.</p>
+            <p>Designed for easy sharing and discovery.</p>
+        </div>
+    </div>
+</footer>

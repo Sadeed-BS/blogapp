@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    {% load static %}
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Blogs | BlogApp</title>
+    <link rel="icon" href="{% static 'icon/favicon.svg' %}" type="image/svg+xml">
+    <script src="https://unpkg.com/@tailwindcss/browser@4"></script>
+</head>
+<body class="min-h-screen bg-slate-950 text-slate-100">
+    <div class="relative overflow-hidden">
+        <div class="absolute inset-x-0 top-0 h-48 bg-gradient-to-r from-indigo-600 via-sky-600 to-cyan-500 opacity-80 blur-3xl"></div>
+        <div class="relative px-4 py-8 sm:px-6 lg:px-8">
+            <header class="mx-auto max-w-6xl">
+                <div class="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+                    <div>
+                        <p class="text-sm font-semibold uppercase tracking-[0.35em] text-cyan-200/80">My Blogs</p>
+                        <h1 class="mt-3 text-4xl font-bold tracking-tight text-white sm:text-5xl">Manage your posts in one place</h1>
+                        <p class="mt-4 max-w-2xl text-sm leading-6 text-slate-300 sm:text-base">Create, edit, and remove blog posts with a clean and responsive dashboard experience.</p>
+                    </div>
+                    <div class="flex flex-wrap gap-3">
+                        {% if user.is_superuser %}
+                            <a href="{% url 'admin_home' %}" class="inline-flex items-center justify-center rounded-full bg-slate-800/90 px-5 py-3 text-sm font-semibold text-slate-100 shadow-lg shadow-slate-950/20 transition hover:bg-slate-700">Dashboard</a>
+                        {% else %}
+                            <a href="{% url 'user_home' %}" class="inline-flex items-center justify-center rounded-full bg-slate-800/90 px-5 py-3 text-sm font-semibold text-slate-100 shadow-lg shadow-slate-950/20 transition hover:bg-slate-700">Dashboard</a>
+                        {% endif %}
+                        <a href="{% url 'add_blog' %}" class="inline-flex items-center justify-center rounded-full bg-gradient-to-r from-indigo-500 to-cyan-400 px-5 py-3 text-sm font-semibold text-slate-950 transition hover:from-indigo-400 hover:to-cyan-300">Add New Blog</a>
+                    </div>
+                </div>
+            </header>
+
+            <main class="mx-auto mt-10 max-w-6xl">
+                {% if blogs %}
+                    <div class="grid gap-6 lg:grid-cols-2">
+                        {% for blog in blogs %}
+                            <article class="group overflow-hidden rounded-3xl border border-white/10 bg-slate-900/80 shadow-2xl shadow-black/20 transition hover:-translate-y-1 hover:border-cyan-500/40">
+                                <div class="relative overflow-hidden bg-slate-950">
+                                    {% if blog.image %}
+                                        <img src="{{ blog.image.url }}" alt="{{ blog.title }}" class="h-64 w-full object-cover transition duration-500 group-hover:scale-105" />
+                                    {% else %}
+                                        <div class="flex h-64 items-center justify-center bg-slate-800 text-slate-400">No image available</div>
+                                    {% endif %}
+                                </div>
+                                <div class="space-y-4 p-6 sm:p-8">
+                                    <div class="flex items-center justify-between gap-4">
+                                        <span class="rounded-full bg-indigo-500/10 px-3 py-1 text-xs font-semibold uppercase tracking-[0.24em] text-indigo-200">Posted by {{ blog.USER.username }}</span>
+                                        <span class="text-sm text-slate-400">{{ blog.created_at|date:'M d, Y' }}</span>
+                                    </div>
+                                    <div>
+                                        <h2 class="text-2xl font-semibold tracking-tight text-white">{{ blog.title }}</h2>
+                                        <p class="mt-3 text-sm leading-6 text-slate-300">{{ blog.content|truncatewords:30 }}</p>
+                                    </div>
+                                    <div class="flex flex-wrap gap-3 pt-4">
+                                        <a href="{% url 'edit_blog' blog.id %}" class="inline-flex items-center justify-center rounded-full border border-cyan-400/20 bg-cyan-500/10 px-4 py-2 text-sm font-semibold text-cyan-200 transition hover:border-cyan-300 hover:bg-cyan-500/15">Edit</a>
+                                        <a href="{% url 'delete_blog' blog.id %}" class="inline-flex items-center justify-center rounded-full border border-rose-500/20 bg-rose-500/10 px-4 py-2 text-sm font-semibold text-rose-200 transition hover:border-rose-300 hover:bg-rose-500/15">Delete</a>
+                                    </div>
+                                </div>
+                            </article>
+                        {% endfor %}
+                    </div>
+                {% else %}
+                    <div class="rounded-3xl border border-dashed border-slate-700 bg-slate-900/80 p-10 text-center text-slate-300">
+                        <p class="text-lg font-semibold text-white">No blog posts yet</p>
+                        <p class="mt-3 text-sm text-slate-400">Start writing your first blog post to see it appear here.</p>
+                        <div class="mt-6">
+                            <a href="{% url 'add_blog' %}" class="inline-flex items-center justify-center rounded-full bg-gradient-to-r from-indigo-500 to-cyan-400 px-6 py-3 text-sm font-semibold text-slate-950 transition hover:from-indigo-400 hover:to-cyan-300">Create your first blog</a>
+                        </div>
+                    </div>
+                {% endif %}
+            </main>
+        </div>
+    </div>
+    {% include 'footer.html' %}
+</body>
+</html>

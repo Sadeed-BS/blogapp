@@ -16,8 +16,10 @@
                     <p class="text-sm text-gray-400">Admin Dashboard</p>
                 </div>
             </a>
-            <div class="flex items-center gap-4">
+            <div class="flex flex-wrap items-center gap-4">
                 <a href="/" class="rounded-full bg-white/5 px-4 py-2 text-sm font-semibold text-indigo-300 hover:bg-white/10">Home</a>
+                <a href="{% url 'view_blogs_admin' %}" class="rounded-full bg-white/5 px-4 py-2 text-sm font-semibold text-indigo-300 hover:bg-white/10">All blogs</a>
+                <a href="{% url 'view_users' %}" class="rounded-full bg-white/5 px-4 py-2 text-sm font-semibold text-indigo-300 hover:bg-white/10">All users</a>
                 <a href="/admin/" class="rounded-full bg-white/5 px-4 py-2 text-sm font-semibold text-indigo-300 hover:bg-white/10">Django Admin</a>
                 <form method="post" action="{% url 'logout' %}">
                     {% csrf_token %}
@@ -56,6 +58,8 @@
             <aside class="rounded-3xl border border-white/10 bg-gray-900/90 p-8 shadow-xl shadow-black/20">
                 <p class="text-sm uppercase tracking-[0.24em] text-indigo-400">Quick actions</p>
                 <div class="mt-6 space-y-4">
+                    <a href="{% url 'add_blog' %}" class="block rounded-3xl border border-white/10 bg-indigo-500/20 px-5 py-4 text-sm font-semibold text-indigo-300 hover:bg-indigo-500/30">Add blog</a>
+                    <a href="{% url 'my_blogs' %}" class="block rounded-3xl border border-white/10 bg-cyan-500/20 px-5 py-4 text-sm font-semibold text-cyan-300 hover:bg-cyan-500/30">View my blogs</a>
                     <a href="{% url 'register' %}" class="block rounded-3xl border border-white/10 bg-white/5 px-5 py-4 text-sm font-semibold text-white hover:bg-white/10">Create new user</a>
                     <a href="{% url 'login' %}" class="block rounded-3xl border border-white/10 bg-white/5 px-5 py-4 text-sm font-semibold text-white hover:bg-white/10">Login as admin</a>
                     <a href="/admin/" class="block rounded-3xl border border-white/10 bg-white/5 px-5 py-4 text-sm font-semibold text-white hover:bg-white/10">Open Django Admin</a>
@@ -91,5 +95,6 @@
             </div>
         </section>
     </main>
+    {% include 'footer.html' %}
 </body>
 </html>

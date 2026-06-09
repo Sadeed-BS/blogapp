@@ -8,15 +8,16 @@
     <link rel="icon" href="{% static 'icon/favicon.svg' %}" type="image/svg+xml">
     <script src="https://unpkg.com/@tailwindcss/browser@4"></script>
 </head>
-<body class="bg-gray-900 min-h-screen flex flex-col items-center justify-center relative overflow-x-hidden font-sans antialiased selection:bg-indigo-500 selection:text-white py-12 px-4 sm:px-6 lg:px-8">
+<body class="bg-gray-900 min-h-screen flex flex-col items-center relative overflow-x-hidden font-sans antialiased selection:bg-indigo-500 selection:text-white">
     
     <div aria-hidden="true" class="absolute inset-0 -z-10 transform-gpu overflow-hidden blur-3xl pointer-events-none">
         <div style="clip-path: polygon(74.1% 44.1%, 100% 61.6%, 97.5% 26.9%, 85.5% 0.1%, 80.7% 2%, 72.5% 32.5%, 60.2% 62.4%, 52.4% 68.1%, 47.5% 58.3%, 45.2% 34.5%, 27.5% 76.7%, 0.1% 64.9%, 17.9% 100%, 27.6% 76.8%, 76.1% 97.7%, 74.1% 44.1%)" class="relative left-[calc(50%-11rem)] aspect-[1155/678] w-[36.125rem] -translate-x-1/2 rotate-[30deg] bg-gradient-to-tr from-[#ff80b5] to-[#9089fc] opacity-20 sm:left-[calc(50%-30rem)] sm:w-[72.1875rem]"></div>
     </div>
 
-    <div class="w-full max-w-md">
-        
-        <div class="text-center mb-8">
+    <main class="w-full flex-1 flex items-center justify-center px-4 py-12 sm:px-6 lg:px-8">
+        <div class="w-full max-w-md">
+            
+            <div class="text-center mb-8">
             <a href="/" class="inline-flex items-center gap-2 hover:opacity-80 transition-opacity">
                 <svg width="36" height="36" viewBox="0 0 512 512" fill="none" xmlns="http://www.w3.org/2000/svg" class="text-indigo-500">
                     <path fill-rule="evenodd" clip-rule="evenodd" d="M128 32C74.9807 32 32 74.9807 32 128V384C32 437.019 74.9807 480 128 480H384C437.019 480 480 437.019 480 384V128C480 74.9807 437.019 32 384 32H128ZM176 108C156.118 108 140 124.118 140 144V368C140 387.882 156.118 404 176 404H320C357.555 404 388 373.555 388 336V304C388 271.022 364.525 243.528 333.374 237.315C337.622 228.438 340 218.497 340 208V176C340 138.445 309.555 108 272 108H176ZM300 208C300 223.464 287.464 236 272 236H180V148H272C287.464 148 300 160.536 300 176V208ZM180 364V276H320C335.464 276 348 288.536 348 304V336C348 351.464 335.464 364 320 364H180Z" fill="currentColor"></path>
@@ -66,8 +67,6 @@
                 <a href="{% url 'register' %}" class="font-semibold text-indigo-400 hover:text-indigo-300 transition-colors">Register here</a>
             </p>
         </div>
-        
-    </div>
-    
+    </main>
 </body>
 </html>
