@@ -41,7 +41,7 @@
                             {% if users %}
                                 {% for i in users %}
                                     <tr class="transition hover:bg-white/5">
-                                        <td class="px-6 py-4 text-slate-100">{{ i.name }}</td>
+                                        <td class="px-6 py-4 text-slate-100"><a href="{% url 'profile' i.USER.username %}" class="text-indigo-400 hover:text-indigo-300 transition">{{ i.name }}</a></td>
                                         <td class="px-6 py-4 text-slate-300 break-words">{{ i.email }}</td>
                                         <td class="px-6 py-4 text-slate-300">{{ i.phone }}</td>
                                         <td class="px-6 py-4 text-slate-300">{{ i.place }}</td>

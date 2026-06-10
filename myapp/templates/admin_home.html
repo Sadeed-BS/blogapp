@@ -39,7 +39,7 @@
                     </div>
                     <div class="rounded-3xl bg-indigo-500/10 px-4 py-3 text-indigo-300">Superuser</div>
                 </div>
-                <div class="mt-10 grid gap-4 sm:grid-cols-3">
+                <div class="mt-10 grid gap-4 sm:grid-cols-4">
                     <div class="rounded-3xl border border-white/10 bg-white/5 p-6">
                         <p class="text-sm text-gray-400">Total users</p>
                         <p class="mt-3 text-3xl font-semibold text-white">{{ user_count }}</p>
@@ -51,6 +51,10 @@
                     <div class="rounded-3xl border border-white/10 bg-white/5 p-6">
                         <p class="text-sm text-gray-400">Blog posts</p>
                         <p class="mt-3 text-3xl font-semibold text-white">{{ blog_count }}</p>
+                    </div>
+                    <div class="rounded-3xl border border-white/10 bg-white/5 p-6">
+                        <p class="text-sm text-gray-400">Follow relations</p>
+                        <p class="mt-3 text-3xl font-semibold text-white">{{ total_follows }}</p>
                     </div>
                 </div>
             </section>

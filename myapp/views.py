@@ -1,9 +1,9 @@
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth import authenticate,login,logout
 from django.contrib.auth.decorators import login_required, user_passes_test
 from django.contrib.auth.models import User
 from django.db.models import Q
-from .models import UserProfile, Blog
+from .models import UserProfile, Blog, Follow
 
 # Create your views here.
 
@@ -76,21 +76,26 @@ def logout_view(request):
 def user_home(request):
     user_profile = UserProfile.objects.filter(USER=request.user).first()
     user_blogs = Blog.objects.filter(USER=request.user).order_by('-created_at')
+    followers_count = Follow.objects.filter(following=request.user).count()
+    following_count = Follow.objects.filter(follower=request.user).count()
     stats = {
         'profile': user_profile,
         'blog_count': user_blogs.count(),
         'recent_blogs': user_blogs[:5],
+        'followers_count': followers_count,
+        'following_count': following_count,
     }
     return render(request, 'user_home.html', stats)
 
 @login_required
-@user_passes_test(lambda user: user.is_superuser)
+@user_passes_test(lambda user: user.is_superuser, login_url='home')
 def admin_view(request):
     stats = {
         'user_count': User.objects.count(),
         'profile_count': UserProfile.objects.count(),
         'blog_count': Blog.objects.count(),
         'recent_blogs': Blog.objects.order_by('-created_at')[:5],
+        'total_follows': Follow.objects.count(),
     }
     return render(request, 'admin_home.html', stats)
 
@@ -167,7 +172,7 @@ def delete_blog(request,id):
    return redirect('my_blogs')
 
 @login_required
-@user_passes_test(lambda user: user.is_superuser)
+@user_passes_test(lambda user: user.is_superuser, login_url='home')
 def delete_blog_admin(request,id):
 
    blog = Blog.objects.get(id=id)
@@ -177,11 +182,133 @@ def delete_blog_admin(request,id):
    return redirect('view_blogs_admin')
 
 
+def profile(request, username):
+    """Display a user's profile and their blogs"""
+    user = get_object_or_404(User, username=username)
+    
+    # Do not allow non-admin users to view an admin profile.
+    if user.is_superuser and not request.user.is_superuser:
+        return redirect('home')
+
+    user_profile = get_object_or_404(UserProfile, USER=user)
+    user_blogs = Blog.objects.filter(USER=user).order_by('-created_at')
+    
+    is_own_profile = request.user == user
+    
+    # Get follower and following counts
+    followers_count = Follow.objects.filter(following=user).count()
+    following_count = Follow.objects.filter(follower=user).count()
+    
+    # Check if current user is following this user
+    is_following = False
+    if request.user.is_authenticated and not is_own_profile:
+        is_following = Follow.objects.filter(follower=request.user, following=user).exists()
+    
+    context = {
+        'profile_user': user,
+        'user_profile': user_profile,
+        'user_blogs': user_blogs,
+        'blog_count': user_blogs.count(),
+        'is_own_profile': is_own_profile,
+        'followers_count': followers_count,
+        'following_count': following_count,
+        'is_following': is_following,
+    }
+    
+    return render(request, 'profile.html', context)
+
+
+@login_required
+def follow_user(request, username):
+    """Follow a user"""
+    user_to_follow = get_object_or_404(User, username=username)
+    
+    # Can't follow yourself
+    if request.user == user_to_follow:
+        return redirect('profile', username=username)
+    
+    # Create follow relationship
+    Follow.objects.get_or_create(
+        follower=request.user,
+        following=user_to_follow
+    )
+    
+    return redirect('profile', username=username)
+
+
+@login_required
+def unfollow_user(request, username):
+    """Unfollow a user"""
+    user_to_unfollow = get_object_or_404(User, username=username)
+    
+    # Can't unfollow yourself
+    if request.user == user_to_unfollow:
+        return redirect('profile', username=username)
+    
+    # Delete follow relationship
+    Follow.objects.filter(
+        follower=request.user,
+        following=user_to_unfollow
+    ).delete()
+    
+    return redirect('profile', username=username)
+
+
+@login_required
+def followers_list(request, username):
+    """Display list of followers for a user"""
+    user = get_object_or_404(User, username=username)
+    followers = Follow.objects.filter(following=user).select_related('follower')
+    
+    is_own_profile = request.user == user
+    
+    context = {
+        'profile_user': user,
+        'followers': [follow.follower for follow in followers],
+        'is_own_profile': is_own_profile,
+        'followers_count': followers.count(),
+    }
+    
+    return render(request, 'followers_list.html', context)
+
+
+@login_required
+def following_list(request, username):
+    """Display list of users that a user is following"""
+    user = get_object_or_404(User, username=username)
+    following = Follow.objects.filter(follower=user).select_related('following')
+    
+    is_own_profile = request.user == user
+    
+    context = {
+        'profile_user': user,
+        'following': [follow.following for follow in following],
+        'is_own_profile': is_own_profile,
+        'following_count': following.count(),
+    }
+    
+    return render(request, 'following_list.html', context)
+
+
+@login_required
+def remove_follower(request, username):
+    """Remove a follower"""
+    follower_user = get_object_or_404(User, username=username)
+    
+    # Only owner can remove followers
+    Follow.objects.filter(
+        follower=follower_user,
+        following=request.user
+    ).delete()
+    
+    return redirect('followers_list', username=request.user.username)
+
+
 def custom_404_view(request, exception=None):
     return render(request, '404.html', status=404)
 
 @login_required
-@user_passes_test(lambda user: user.is_superuser)
+@user_passes_test(lambda user: user.is_superuser, login_url='home')
 def view_blogs_admin(request):
 
    blogs = Blog.objects.all()
@@ -189,7 +316,7 @@ def view_blogs_admin(request):
    return render(request,'view_blogs_admin.html',{'blogs':blogs})
 
 @login_required
-@user_passes_test(lambda user: user.is_superuser)
+@user_passes_test(lambda user: user.is_superuser, login_url='home')
 def view_users(request):
 
    users = UserProfile.objects.all()

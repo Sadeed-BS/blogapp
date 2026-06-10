@@ -57,7 +57,7 @@
                                 <div class="space-y-6 p-8 sm:p-10">
                                     <div class="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
                                         <div>
-                                            <p class="text-sm font-semibold uppercase tracking-[0.24em] text-cyan-300">{{ blog.USER.username }}</p>
+                                            <a href="{% url 'profile' blog.USER.username %}" class="text-sm font-semibold uppercase tracking-[0.24em] text-cyan-300 hover:text-cyan-200 transition">{{ blog.USER.username }}</a>
                                             <p class="mt-2 text-4xl font-semibold text-white">{{ blog.title }}</p>
                                         </div>
                                         <time datetime="{{ blog.created_at|date:'Y-m-d' }}" class="text-sm text-slate-400">{{ blog.created_at|date:'M d, Y' }}</time>
@@ -70,7 +70,7 @@
                                 <div class="space-y-4 p-6 sm:p-8">
                                     <div class="flex items-center justify-between gap-4">
                                         <div>
-                                            <p class="text-sm font-semibold uppercase tracking-[0.24em] text-cyan-300">{{ blog.USER.username }}</p>
+                                            <a href="{% url 'profile' blog.USER.username %}" class="text-sm font-semibold uppercase tracking-[0.24em] text-cyan-300 hover:text-cyan-200 transition">{{ blog.USER.username }}</a>
                                             <h2 class="mt-2 text-2xl font-semibold text-white">{{ blog.title }}</h2>
                                         </div>
                                         <time datetime="{{ blog.created_at|date:'Y-m-d' }}" class="text-sm text-slate-400">{{ blog.created_at|date:'M d, Y' }}</time>

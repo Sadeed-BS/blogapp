@@ -37,25 +37,25 @@
                         <h1 class="mt-4 text-3xl font-bold text-white">{{ request.user.username }}'s dashboard</h1>
                         <p class="mt-3 max-w-2xl text-sm leading-6 text-gray-400">Manage your profile, view your latest posts, and keep writing your next technical story.</p>
                     </div>
-                    <div class="grid w-full gap-4 grid-cols-1 sm:grid-cols-2 xl:grid-cols-3">
+                    <div class="grid w-full gap-4 grid-cols-1 sm:grid-cols-2 xl:grid-cols-4">
                         <div class="rounded-3xl border border-white/10 bg-white/5 p-6">
                             <p class="text-sm text-gray-400">Posts written</p>
                             <p class="mt-3 text-3xl font-semibold text-white">{{ blog_count }}</p>
                         </div>
                         <div class="rounded-3xl border border-white/10 bg-white/5 p-6">
-                            <p class="text-sm text-gray-400">Name</p>
-                            {% if profile %}
-                                <p class="mt-3 text-3xl font-semibold text-white text-left">{{ profile.name }}</p>
-                            {% else %}
-                                <p class="mt-3 text-3xl font-semibold text-white text-left">{{ request.user.username }}</p>
-                            {% endif %}
+                            <p class="text-sm text-gray-400">Followers</p>
+                            <a href="{% url 'followers_list' request.user.username %}" class="mt-3 text-3xl font-semibold text-indigo-400 hover:text-indigo-300 transition">{{ followers_count }}</a>
                         </div>
                         <div class="rounded-3xl border border-white/10 bg-white/5 p-6">
-                            <p class="text-sm text-gray-400">Email</p>
+                            <p class="text-sm text-gray-400">Following</p>
+                            <a href="{% url 'following_list' request.user.username %}" class="mt-3 text-3xl font-semibold text-indigo-400 hover:text-indigo-300 transition">{{ following_count }}</a>
+                        </div>
+                        <div class="rounded-3xl border border-white/10 bg-white/5 p-6">
+                            <p class="text-sm text-gray-400">Name</p>
                             {% if profile %}
-                                <p class="mt-3 text-3xl font-semibold text-white text-left break-words">{{ profile.email }}</p>
+                                <p class="mt-3 text-xl font-semibold text-white text-left truncate">{{ profile.name }}</p>
                             {% else %}
-                                <p class="mt-3 text-3xl font-semibold text-white text-left break-words">{{ request.user.email }}</p>
+                                <p class="mt-3 text-xl font-semibold text-white text-left truncate">{{ request.user.username }}</p>
                             {% endif %}
                         </div>
                     </div>

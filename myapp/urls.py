@@ -16,4 +16,10 @@ urlpatterns = [
     path('view_blogs_admin/',views.view_blogs_admin,name='view_blogs_admin'),
     path('delete_blog_admin/<int:id>/',views.delete_blog_admin,name='delete_blog_admin'),
     path('blogs/', views.blog_feed, name='blog_feed'),
+    path('profile/<str:username>/', views.profile, name='profile'),
+    path('profile/<str:username>/follow/', views.follow_user, name='follow_user'),
+    path('profile/<str:username>/unfollow/', views.unfollow_user, name='unfollow_user'),
+    path('followers/<str:username>/', views.followers_list, name='followers_list'),
+    path('following/<str:username>/', views.following_list, name='following_list'),
+    path('remove_follower/<str:username>/', views.remove_follower, name='remove_follower'),
 ]
