@@ -127,7 +127,7 @@
                                         </div>
                                         <div class="flex items-center justify-between gap-4">
                                             <p class="text-xs text-gray-500">📅 {{ blog.created_at|date:'M d, Y' }}</p>
-                                            <a href="{% url 'edit_blog' blog.id %}" class="inline-flex items-center rounded-full bg-indigo-500/20 px-3 py-1 text-xs font-semibold text-indigo-300 hover:bg-indigo-500/40">
+                                            <a href="{% url 'blog_detail' blog.id %}" class="inline-flex items-center rounded-full bg-indigo-500/20 px-3 py-1 text-xs font-semibold text-indigo-300 hover:bg-indigo-500/40">
                                                 Read more →
                                             </a>
                                         </div>

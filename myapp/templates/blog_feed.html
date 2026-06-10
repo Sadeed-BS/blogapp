@@ -63,6 +63,24 @@
                                         <time datetime="{{ blog.created_at|date:'Y-m-d' }}" class="text-sm text-slate-400">{{ blog.created_at|date:'M d, Y' }}</time>
                                     </div>
                                     <p class="text-base leading-8 text-slate-300">{{ blog.content|linebreaksbr }}</p>
+                                    <div class="mt-4 flex items-center gap-4">
+                                        <div class="text-sm text-gray-400">Likes: <span class="text-indigo-300 font-semibold">{{ blog.like_count }}</span></div>
+                                        {% if user.is_authenticated %}
+                                            {% if blog.user_liked %}
+                                                <form method="post" action="{% url 'unlike_blog' blog.id %}">
+                                                    {% csrf_token %}
+                                                    <button type="submit" class="rounded-full bg-red-500/20 border border-red-500/50 px-3 py-1 text-sm font-semibold text-red-300 hover:bg-red-500/30 transition">Unlike</button>
+                                                </form>
+                                            {% else %}
+                                                <form method="post" action="{% url 'like_blog' blog.id %}">
+                                                    {% csrf_token %}
+                                                    <button type="submit" class="rounded-full bg-indigo-500 px-3 py-1 text-sm font-semibold text-white hover:bg-indigo-400 transition">Like</button>
+                                                </form>
+                                            {% endif %}
+                                        {% else %}
+                                            <a href="{% url 'login' %}?next={% url 'blog_detail' blog.id %}" class="rounded-full bg-indigo-500 px-3 py-1 text-sm font-semibold text-white hover:bg-indigo-400 transition">Login to like</a>
+                                        {% endif %}
+                                    </div>
                                 </div>
                             </article>
                         {% else %}
@@ -79,6 +97,24 @@
                                         <img src="{{ blog.image.url }}" alt="{{ blog.title }}" class="h-72 w-full rounded-[1.75rem] object-cover object-center" />
                                     {% endif %}
                                     <p class="text-sm leading-7 text-slate-300">{{ blog.content|linebreaksbr }}</p>
+                                    <div class="mt-4 flex items-center gap-4">
+                                        <div class="text-sm text-gray-400">Likes: <span class="text-indigo-300 font-semibold">{{ blog.like_count }}</span></div>
+                                        {% if user.is_authenticated %}
+                                            {% if blog.user_liked %}
+                                                <form method="post" action="{% url 'unlike_blog' blog.id %}">
+                                                    {% csrf_token %}
+                                                    <button type="submit" class="rounded-full bg-red-500/20 border border-red-500/50 px-3 py-1 text-sm font-semibold text-red-300 hover:bg-red-500/30 transition">Unlike</button>
+                                                </form>
+                                            {% else %}
+                                                <form method="post" action="{% url 'like_blog' blog.id %}">
+                                                    {% csrf_token %}
+                                                    <button type="submit" class="rounded-full bg-indigo-500 px-3 py-1 text-sm font-semibold text-white hover:bg-indigo-400 transition">Like</button>
+                                                </form>
+                                            {% endif %}
+                                        {% else %}
+                                            <a href="{% url 'login' %}?next={% url 'blog_detail' blog.id %}" class="rounded-full bg-indigo-500 px-3 py-1 text-sm font-semibold text-white hover:bg-indigo-400 transition">Login to like</a>
+                                        {% endif %}
+                                    </div>
                                 </div>
                             </article>
                         {% endif %}

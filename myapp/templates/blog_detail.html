@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+    {% load static %}
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <title>{{ blog.title }} - BlogAPP</title>
+        <link rel="icon" href="{% static 'icon/favicon.svg' %}" type="image/svg+xml">
+        <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+    </head>
+    <body class="bg-gray-950 text-white font-sans antialiased selection:bg-indigo-500 selection:text-white">
+        {% include 'header.html' %}
+        <main class="mx-auto max-w-3xl px-6 py-12 lg:px-8">
+            <article class="rounded-3xl border border-white/10 bg-gradient-to-br from-gray-900/90 to-gray-950 p-8 shadow-xl shadow-black/20">
+                {% if blog.image %}
+                    <img src="{{ blog.image.url }}" alt="{{ blog.title }}" class="w-full rounded-2xl object-cover mb-6" />
+                {% endif %}
+                <div class="mb-4 text-sm text-gray-400">
+                    <a href="{% url 'profile' blog.USER.username %}" class="font-semibold text-indigo-300">{{ blog.USER.username }}</a>
+                    <span class="mx-2">•</span>
+                    <time datetime="{{ blog.created_at|date:'Y-m-d' }}">{{ blog.created_at|date:'M d, Y' }}</time>
+                </div>
+                <h1 class="text-3xl font-bold text-white mb-4">{{ blog.title }}</h1>
+                <div class="prose prose-invert max-w-none text-slate-300">{{ blog.content|linebreaksbr }}</div>
+                <div class="mt-6 flex items-center gap-4">
+                    <div class="text-sm text-gray-400">Likes: <span class="text-indigo-300 font-semibold">{{ like_count }}</span></div>
+                    {% if user.is_authenticated %}
+                        {% if is_liked %}
+                            <form method="post" action="{% url 'unlike_blog' blog.id %}">
+                                {% csrf_token %}
+                                <button type="submit" class="rounded-full bg-red-500/20 border border-red-500/50 px-4 py-2 text-sm font-semibold text-red-300 hover:bg-red-500/30 transition">Unlike</button>
+                            </form>
+                        {% else %}
+                            <form method="post" action="{% url 'like_blog' blog.id %}">
+                                {% csrf_token %}
+                                <button type="submit" class="rounded-full bg-indigo-500 px-4 py-2 text-sm font-semibold text-white hover:bg-indigo-400 transition">Like</button>
+                            </form>
+                        {% endif %}
+                    {% else %}
+                        <a href="{% url 'login' %}?next={% url 'blog_detail' blog.id %}" class="rounded-full bg-indigo-500 px-4 py-2 text-sm font-semibold text-white hover:bg-indigo-400 transition">Login to like</a>
+                    {% endif %}
+                </div>
+            </article>
+        </main>
+        {% include 'footer.html' %}
+    </body>
+</html>

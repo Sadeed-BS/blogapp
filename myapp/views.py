@@ -2,8 +2,9 @@ from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth import authenticate,login,logout
 from django.contrib.auth.decorators import login_required, user_passes_test
 from django.contrib.auth.models import User
-from django.db.models import Q
-from .models import UserProfile, Blog, Follow
+from django.db.models import Q, Count, Exists, OuterRef
+from .models import UserProfile, Blog, Follow, BlogLike
+from django.urls import reverse
 
 # Create your views here.
 
@@ -140,6 +141,15 @@ def blog_feed(request):
             Q(content__icontains=query) |
             Q(USER__username__icontains=query)
         )
+    # annotate like counts
+    blogs = blogs.annotate(like_count=Count('likes'))
+    # annotate whether current user liked each blog
+    if request.user.is_authenticated:
+        user_likes = BlogLike.objects.filter(blog=OuterRef('pk'), user=request.user)
+        blogs = blogs.annotate(user_liked=Exists(user_likes))
+    else:
+        blogs = blogs.annotate(user_liked=Exists(BlogLike.objects.none()))
+
     blogs = blogs.order_by('-created_at')
     return render(request, 'blog_feed.html', {'blogs': blogs, 'query': query})
 
@@ -322,6 +332,62 @@ def view_users(request):
    users = UserProfile.objects.all()
 
    return render(request,'view_users.html',{'users':users})
+
+
+def blog_detail(request, id):
+    """Show a single blog post detail."""
+    blog = get_object_or_404(Blog, id=id)
+    author_profile = UserProfile.objects.filter(USER=blog.USER).first()
+    # like info
+    like_count = BlogLike.objects.filter(blog=blog).count()
+    is_liked = False
+    if request.user.is_authenticated:
+        is_liked = BlogLike.objects.filter(blog=blog, user=request.user).exists()
+
+    context = {
+        'blog': blog,
+        'author_profile': author_profile,
+        'like_count': like_count,
+        'is_liked': is_liked,
+    }
+    return render(request, 'blog_detail.html', context)
+
+
+@login_required
+def like_blog(request, id):
+    # Accept only POST for creating a like; after action, return to referrer when possible
+    if request.method != 'POST':
+        ref = request.META.get('HTTP_REFERER')
+        if ref:
+            return redirect(ref)
+        return redirect('blog_detail', id=id)
+    blog = get_object_or_404(Blog, id=id)
+    if request.user == blog.USER:
+        ref = request.META.get('HTTP_REFERER')
+        if ref:
+            return redirect(ref)
+        return redirect('blog_detail', id=id)
+    BlogLike.objects.get_or_create(user=request.user, blog=blog)
+    ref = request.META.get('HTTP_REFERER')
+    if ref:
+        return redirect(ref)
+    return redirect('blog_detail', id=id)
+
+
+@login_required
+def unlike_blog(request, id):
+    # Accept only POST for removing a like; return to referring page when possible
+    if request.method != 'POST':
+        ref = request.META.get('HTTP_REFERER')
+        if ref:
+            return redirect(ref)
+        return redirect('blog_detail', id=id)
+    blog = get_object_or_404(Blog, id=id)
+    BlogLike.objects.filter(user=request.user, blog=blog).delete()
+    ref = request.META.get('HTTP_REFERER')
+    if ref:
+        return redirect(ref)
+    return redirect('blog_detail', id=id)
 
 
 

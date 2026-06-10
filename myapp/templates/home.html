@@ -112,7 +112,7 @@
                                     <p class="mt-4 text-sm leading-6 text-slate-300 line-clamp-4">{{ blog.content|truncatewords:25 }}</p>
                                     <div class="mt-5 flex items-center justify-between text-sm text-slate-400">
                                         <span>{{ blog.created_at|date:'M d, Y' }}</span>
-                                        <a href="{% url 'blog_feed' %}" class="font-semibold text-indigo-300 hover:text-indigo-200">Read more</a>
+                                        <a href="{% url 'blog_detail' blog.id %}" class="font-semibold text-indigo-300 hover:text-indigo-200">Read more</a>
                                     </div>
                                 </div>
                             </article>
